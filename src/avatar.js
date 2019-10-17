@@ -174,13 +174,13 @@ function createAvatarComponent({ sources = [] }) {
             if (!node || unstyled || this.state.src || !this.mounted)
                 return;
 
-            const spanNode = node.parentNode;
+            const spanNode = node.parentNode.parentNode;
             const tableNode = spanNode.parentNode;
 
             const {
                 width: containerWidth,
                 height: containerHeight
-            } = spanNode.getBoundingClientRect();
+            } = tableNode.getBoundingClientRect();
 
             // Whenever the avatar element is not visible due to some CSS
             // (such as display: none) on any parent component we will check
@@ -232,43 +232,49 @@ function createAvatarComponent({ sources = [] }) {
 
             return (
                 <img className={className + ' sb-avatar__image'}
-                    width={size.str}
-                    height={size.str}
-                    style={imageStyle}
-                    src={this.state.src}
-                    alt={alt || name || value}
-                    onError={internal && internal.fetch} />
+                     width={size.str}
+                     height={size.str}
+                     style={imageStyle}
+                     src={this.state.src}
+                     alt={alt || name || value}
+                     onError={internal && internal.fetch} />
             );
         }
 
         _renderAsText() {
-            const { className, round, unstyled } = this.props;
+            const { className, round, unstyled, bgColor, fgColor} = this.props;
             const size = parseSize(this.props.size);
-
             const initialsStyle = unstyled ? null : {
                 width: size.str,
                 height: size.str,
                 lineHeight: 'initial',
                 textAlign: 'center',
                 textTransform: 'uppercase',
-                color: this.props.fgColor,
-                background: this.state.color,
-                borderRadius: (round === true ? '100%' : round)
+                color: fgColor,
+                background: bgColor,
+                borderRadius: (round === true ? '100%' : round),
+                display: 'flex'
             };
 
             const tableStyle = unstyled ? null : {
-                display: 'table',
+                display: 'flex',
                 tableLayout: 'fixed',
-                width: '100%',
-                height: '100%'
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%'
             };
 
             const spanStyle = unstyled ? null : {
                 display: 'table-cell',
-                verticalAlign: 'middle',
+                verticalAlign: 'sub',
                 fontSize: '100%',
+                justifyContent: 'center',
                 whiteSpace: 'nowrap'
             };
+
+            const innerSpanStyle = unstyled ? null : {
+                verticalAlign: 'sub'
+            }
 
             // Ensure the text node is updated and scaled when any of these
             // values changed by calling the `_scaleTextNode` method using
@@ -280,10 +286,10 @@ function createAvatarComponent({ sources = [] }) {
 
             return (
                 <div className={className + ' sb-avatar__text'}
-                    style={initialsStyle}>
+                     style={initialsStyle}>
                     <div style={tableStyle}>
                         <span style={spanStyle}>
-                            <span ref={this._scaleTextNode} key={key}>
+                            <span ref={this._scaleTextNode} key={key} style={innerSpanStyle} >
                                 {this.state.value}
                             </span>
                         </span>
@@ -306,7 +312,6 @@ function createAvatarComponent({ sources = [] }) {
                 fontFamily: 'Helvetica, Arial, sans-serif',
                 ...style
             };
-
             const classNames = [ className, 'sb-avatar' ];
 
             if (sourceName) {
@@ -318,8 +323,8 @@ function createAvatarComponent({ sources = [] }) {
 
             return (
                 <div className={classNames.join(' ')}
-                    onClick={onClick}
-                    style={hostStyle}>
+                     onClick={onClick}
+                     style={hostStyle}>
                     {src ? this._renderAsImage() : this._renderAsText()}
                 </div>
             );
