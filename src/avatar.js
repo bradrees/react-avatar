@@ -266,14 +266,12 @@ function createAvatarComponent({ sources = [] }) {
 
             const spanStyle = unstyled ? null : {
                 display: 'table-cell',
-                verticalAlign: 'sub',
                 fontSize: '100%',
                 justifyContent: 'center',
                 whiteSpace: 'nowrap'
             };
 
             const innerSpanStyle = unstyled ? null : {
-                verticalAlign: 'sub'
             }
 
             // Ensure the text node is updated and scaled when any of these
