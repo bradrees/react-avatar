@@ -16,6 +16,7 @@
     "build:demo": "webpack -p",
     "demo": "npm -s run build:demo",
     "dev": "webpack-dev-server",
+    "lint": "eslint --fix src",
     "serve": "npm -s run dev",
     "test": "npm -s run test:lint",
     "test:lint": "eslint src",
