@@ -1,9 +1,9 @@
 'use strict';
 
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 
-import { Cache } from './cache';
+import {Cache} from './cache';
 import {withConfig, ConfigProvider} from './context';
 import {getRandomColor, parseSize, setGroupedTimeout} from './utils';
 import InternalState from './internal-state';
@@ -13,10 +13,10 @@ export {ConfigProvider} from './context';
 export {Cache} from './cache';
 
 function matchSource(Source, props, cb) {
-    const { cache } = props;
+    const {cache} = props;
     const instance = new Source(props);
 
-    if(!instance.isCompatible(props))
+    if (!instance.isCompatible(props))
         return cb();
 
     instance.get((state) => {
@@ -24,7 +24,7 @@ function matchSource(Source, props, cb) {
             state.hasOwnProperty('src') &&
             cache.hasSourceFailedBefore(state.src);
 
-        if(!failedBefore && state) {
+        if (!failedBefore && state) {
             cb(state);
         } else {
             cb();
@@ -32,8 +32,7 @@ function matchSource(Source, props, cb) {
     });
 }
 
-export default
-function createAvatarComponent({ sources = [] }) {
+export default function createAvatarComponent({sources = []}) {
 
     // Collect propTypes for each individual source
     const sourcePropTypes = sources.reduce((r, s) => Object.assign(r, s.propTypes), {});
@@ -121,17 +120,17 @@ function createAvatarComponent({ sources = [] }) {
         static ConfigProvider = ConfigProvider
 
         _createFetcher = (internal) => (errEvent) => {
-            const { cache } = this.props;
+            const {cache} = this.props;
 
             if (!internal.isActive(this.state))
                 return;
 
             // Mark img source as failed for future reference
-            if( errEvent && errEvent.type === 'error' )
+            if (errEvent && errEvent.type === 'error')
                 cache.sourceFailed(errEvent.target.src);
 
             const pointer = internal.sourcePointer;
-            if(sources.length === pointer)
+            if (sources.length === pointer)
                 return;
 
             const source = sources[pointer];
@@ -165,11 +164,11 @@ function createAvatarComponent({ sources = [] }) {
             const internal = new InternalState();
             internal.fetch = this._createFetcher(internal);
 
-            this.setState({ internal }, internal.fetch);
+            this.setState({internal}, internal.fetch);
         };
 
         _scaleTextNode = (node, retryTTL = 16) => {
-            const { unstyled, textSizeRatio, textMarginRatio } = this.props;
+            const {unstyled, textSizeRatio, textMarginRatio} = this.props;
 
             if (!node || unstyled || this.state.src || !this.mounted)
                 return;
@@ -205,7 +204,7 @@ function createAvatarComponent({ sources = [] }) {
             spanNode.style.fontSize = null;
 
             // Measure the actual width of the text after setting the container size
-            const { width: textWidth } = node.getBoundingClientRect();
+            const {width: textWidth} = node.getBoundingClientRect();
 
             if (textWidth < 0)
                 return;
@@ -219,8 +218,8 @@ function createAvatarComponent({ sources = [] }) {
         }
 
         _renderAsImage() {
-            const { className, round, unstyled, alt, name, value } = this.props;
-            const { internal } = this.state;
+            const {className, round, unstyled, alt, name, value} = this.props;
+            const {internal} = this.state;
             const size = parseSize(this.props.size);
 
             const imageStyle = unstyled ? null : {
@@ -232,17 +231,17 @@ function createAvatarComponent({ sources = [] }) {
 
             return (
                 <img className={className + ' sb-avatar__image'}
-                     width={size.str}
-                     height={size.str}
-                     style={imageStyle}
-                     src={this.state.src}
-                     alt={alt || name || value}
-                     onError={internal && internal.fetch} />
+                    width={size.str}
+                    height={size.str}
+                    style={imageStyle}
+                    src={this.state.src}
+                    alt={alt || name || value}
+                    onError={internal && internal.fetch}/>
             );
         }
 
         _renderAsText() {
-            const { className, round, unstyled, bgColor, fgColor} = this.props;
+            const {className, round, unstyled, bgColor, fgColor} = this.props;
             const size = parseSize(this.props.size);
             const initialsStyle = unstyled ? null : {
                 width: size.str,
@@ -271,8 +270,7 @@ function createAvatarComponent({ sources = [] }) {
                 whiteSpace: 'nowrap'
             };
 
-            const innerSpanStyle = unstyled ? null : {
-            }
+            const innerSpanStyle = unstyled ? null : {};
 
             // Ensure the text node is updated and scaled when any of these
             // values changed by calling the `_scaleTextNode` method using
@@ -284,10 +282,10 @@ function createAvatarComponent({ sources = [] }) {
 
             return (
                 <div className={className + ' sb-avatar__text'}
-                     style={initialsStyle}>
+                    style={initialsStyle}>
                     <div style={tableStyle}>
                         <span style={spanStyle}>
-                            <span ref={this._scaleTextNode} key={key} style={innerSpanStyle} >
+                            <span ref={this._scaleTextNode} key={key} style={innerSpanStyle}>
                                 {this.state.value}
                             </span>
                         </span>
@@ -297,8 +295,8 @@ function createAvatarComponent({ sources = [] }) {
         }
 
         render() {
-            const { className, unstyled, round, style, onClick } = this.props;
-            const { src, sourceName } = this.state;
+            const {className, unstyled, round, style, onClick} = this.props;
+            const {src, sourceName} = this.state;
             const size = parseSize(this.props.size);
 
             const hostStyle = unstyled ? null : {
@@ -310,7 +308,7 @@ function createAvatarComponent({ sources = [] }) {
                 fontFamily: 'Helvetica, Arial, sans-serif',
                 ...style
             };
-            const classNames = [ className, 'sb-avatar' ];
+            const classNames = [className, 'sb-avatar'];
 
             if (sourceName) {
                 const source = sourceName.toLowerCase()
@@ -321,8 +319,8 @@ function createAvatarComponent({ sources = [] }) {
 
             return (
                 <div className={classNames.join(' ')}
-                     onClick={onClick}
-                     style={hostStyle}>
+                    onClick={onClick}
+                    style={hostStyle}>
                     {src ? this._renderAsImage() : this._renderAsText()}
                 </div>
             );
